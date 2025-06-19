@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Contrôle Voiture</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #141e30, #243b55);
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      font-size: 20px;
+      padding: 15px 30px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-green { background-color: #28a745; }
+    .btn-red { background-color: #dc3545; }
+    .btn-blue { background-color: #007bff; }
+    .btn-orange { background-color: #fd7e14; }
+    .btn-purple { background-color: #6f42c1; }
+    .btn-cyan { background-color: #17a2b8; }
+    .btn-pink { background-color: #e83e8c; }
+    .btn-teal { background-color: #20c997; }
+    .btn-yellow { background-color: #ffc107; }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Contrôle de la voiture</h1>
+
+  <div class="grid">
+    <button class="btn btn-green" onclick="send('forward')">Avancer</button>
+    <button class="btn btn-blue" onclick="send('left')">Gauche</button>
+    <button class="btn btn-orange" onclick="send('right')">Droite</button>
+    <button class="btn btn-purple" onclick="send('stop')">Stop</button>
+  </div>
+
+  <h2 style="margin-top: 40px;">Séquences automatiques</h2>
+
+  <div class="grid">
+    <button class="btn btn-cyan" onclick="sequence1()">🟢 Ligne + virage G + virage D</button>
+    <button class="btn btn-pink" onclick="zigzag()">🚀 Zigzag</button>
+    <button class="btn btn-teal" onclick="spirale()">🌀 Spirale</button>
+    <button class="btn btn-yellow" onclick="boucle()">🔄 Boucle courte</button>
+  </div>
+
+  <script>
+    const BASE_URL = 'http://10.1.6.182:5000';
+
+    function send(cmd) {
+      fetch(`${BASE_URL}/${cmd}`)
+        .then(() => console.log(`${cmd} envoyé`))
+        .catch(err => console.warn(`${cmd} échoué (ignoré) :`, err));
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function sequence1() {
+      send('forward');
+      await sleep(3000);
+
+      send('forward_left');
+      await sleep(3000);
+
+      send('forward');
+      await sleep(3000);
+
+      send('right');
+      await sleep(1000);
+
+      send('stop');
+    }
+
+    async function zigzag() {
+      send('forward');
+      await sleep(2000);
+
+      send('forward_left');
+      await sleep(2000);
+
+      send('forward_right');
+      await sleep(2000);
+
+      send('forward_right');
+      await sleep(2000);
+
+      send('forward_left');
+      await sleep(2000);
+
+      send('stop');
+    }
+
+    async function spirale() {
+      send('forward');
+      await sleep(2000);
+
+      send('forward_left');
+      await sleep(2000);
+
+      send('forward');
+      await sleep(2000);
+
+      send('forward_left');
+      await sleep(2000);
+
+      send('stop');
+    }
+
+    async function boucle() {
+      send('forward');
+      await sleep(2000);
+
+      send('forward_right');
+      await sleep(2000);
+
+      send('forward');
+      await sleep(2000);
+
+      send('forward_right');
+      await sleep(2000);
+
+      send('stop');
+    }
+  </script>
+</body>
+</html>
