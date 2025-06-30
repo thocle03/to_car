@@ -101,11 +101,11 @@ try:
 
             if throttle > MOTOR_DEADZONE:
                 throttle_ratio = (throttle - MOTOR_DEADZONE) / ((FORWARD - MOTOR_DEADZONE) / 2)
-                steering_range = 1.0 - throttle_ratio * 0.999  # max ~3% de braquage à plein régime
+                steering_range = 1.0 - throttle_ratio * 0.999  # max ~0.1% de braquage à plein régime
                 steering_range = np.clip(steering_range, 0.001, 1.0)  # sécurité pour ne pas tomber à 0
             else:
                  steering_range = 1.0
-
+            # Calcul de la consigne de braquage, proportionnelle au décalage horizontal du triangle
             raw_steering = NEUTRAL + (offset / max_offset) * (RIGHT - NEUTRAL) * steering_range
             steering = smooth(int(np.clip(raw_steering, min(LEFT, RIGHT), max(LEFT, RIGHT))), steering_history)
 
@@ -121,7 +121,7 @@ try:
         # --- Console ---
         print(f"throttle: {throttle}, steering: {steering}, distance: {distance} cm")
 
-        time.sleep(0.01)  # ~50 FPS max
+        time.sleep(0.01)
 
 except KeyboardInterrupt:
     print("Arrêt par l'utilisateur.")
